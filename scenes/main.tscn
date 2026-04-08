@@ -9,18 +9,18 @@
 [ext_resource type="PackedScene" uid="uid://2q2g5hgx4of1" path="res://scenes/level/tree_single.tscn" id="4_trceg"]
 [ext_resource type="PackedScene" uid="uid://dintogilorvpb" path="res://scenes/level/pool.tscn" id="5_a8y0u"]
 [ext_resource type="PackedScene" uid="uid://clhmrpo0yg23" path="res://scenes/alien/mashdoom.tscn" id="5_tbgi4"]
+[ext_resource type="PackedScene" uid="uid://ixnxiklpirmq" path="res://scenes/level/border.tscn" id="6_ya4ey"]
+[ext_resource type="PackedScene" uid="uid://cvnd5o66dm4fk" path="res://scenes/ui/teleport/to_pemukiman.tscn" id="11_ya4ey"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_85g3d"]
 radius = 320.00626
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_choun"]
-size = Vector2(340, 248)
 
 [node name="Main" type="Node2D" unique_id=886762236]
 
 [node name="MapHutan" type="Sprite2D" parent="." unique_id=11637955]
 position = Vector2(2158, 1352)
 texture = ExtResource("1_choun")
+metadata/_edit_lock_ = true
 
 [node name="Trees" type="Node" parent="MapHutan" unique_id=1420445256]
 
@@ -94,7 +94,7 @@ position = Vector2(736, 1177)
 scale = Vector2(0.8000012, 0.8000012)
 
 [node name="pool" parent="MapHutan/tree and pool" unique_id=1847639885 instance=ExtResource("5_a8y0u")]
-position = Vector2(1011, 1331)
+position = Vector2(1007, 1329)
 
 [node name="tree and pool2" type="Node" parent="MapHutan" unique_id=1505681263]
 
@@ -114,8 +114,10 @@ position = Vector2(3192, 2651)
 position = Vector2(-1326, -1057)
 shape = SubResource("CircleShape2D_85g3d")
 
+[node name="border" parent="MapHutan" unique_id=1756506202 instance=ExtResource("6_ya4ey")]
+
 [node name="Player" parent="." unique_id=1377003254 instance=ExtResource("2_0wfyh")]
-position = Vector2(576, 638)
+position = Vector2(1117, 2291)
 
 [node name="EnemyHuman" parent="." unique_id=681502804 instance=ExtResource("3_sugp2")]
 position = Vector2(2011, 970)
@@ -126,14 +128,5 @@ position = Vector2(1123, 485)
 [node name="Mashdoom" parent="." unique_id=1815761454 instance=ExtResource("5_tbgi4")]
 position = Vector2(630, 918)
 
-[node name="To Pemukiman" type="StaticBody2D" parent="." unique_id=1762947318]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="To Pemukiman" unique_id=277542218]
-position = Vector2(1826, 2581)
-shape = SubResource("RectangleShape2D_choun")
-
-[node name="Label" type="Label" parent="To Pemukiman" unique_id=1415175727]
-offset_left = 1773.0
-offset_top = 2522.0
-offset_right = 1813.0
-offset_bottom = 2545.0
+[node name="To Pemukiman" parent="." unique_id=1779487322 instance=ExtResource("11_ya4ey")]
+position = Vector2(1823, 2677)

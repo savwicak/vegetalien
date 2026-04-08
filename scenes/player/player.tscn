@@ -10,13 +10,15 @@ radius = 31.0
 script = ExtResource("1_dovo2")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1961429078]
+position = Vector2(1.5, 0)
 texture = ExtResource("1_8afob")
 
-[node name="Camera2D" type="Camera2D" parent="." unique_id=1146225356]
-limit_left = -4314
-limit_top = -2703
-limit_right = 4314
-limit_bottom = 2703
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1535793536]
+position = Vector2(1.5, 0)
 shape = SubResource("CircleShape2D_dovo2")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1146225356]
+limit_left = 1
+limit_top = -1
+limit_right = 4314
+limit_bottom = 2702
