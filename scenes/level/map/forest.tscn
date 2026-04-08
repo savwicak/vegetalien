@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://be5jhbynpuehw"]
+
+[ext_resource type="Texture2D" uid="uid://c8j8xs1vcrnm8" path="res://assets/map_forest/Hutan2.svg" id="1_lvaa4"]
+
+[node name="Forest" type="Node2D" unique_id=1491744138]
+
+[node name="forest 2" type="Sprite2D" parent="." unique_id=1645410055]
+position = Vector2(717, 474)
+texture = ExtResource("1_lvaa4")
