@@ -7,10 +7,7 @@ func _process(delta):
 	position += direction * speed * delta
 
 func _on_body_entered(body):
-	print("TABRAK:", body.name)
-
 	if body.is_in_group("enemies"):
-		print("MASUK GROUP 😈")
 		body.apply_knockback(global_position, 60)
 		queue_free()
 

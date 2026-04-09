@@ -1,7 +1,38 @@
 [gd_scene format=3 uid="uid://cwa73ox237egm"]
 
-[ext_resource type="Texture2D" uid="uid://bkbtrak2tvu3t" path="res://assets/images/Tomate.png" id="1_8afob"]
 [ext_resource type="Script" uid="uid://cxyymgddte7j4" path="res://scripts/player/movement.gd" id="1_dovo2"]
+[ext_resource type="Texture2D" uid="uid://b4egjhkuaqdfb" path="res://assets/images/player/normal.svg" id="2_p47bc"]
+[ext_resource type="Texture2D" uid="uid://1cniwre8wwsk" path="res://assets/images/player/tomate2.svg" id="3_lvxji"]
+[ext_resource type="Texture2D" uid="uid://dayvjec8kfmdk" path="res://assets/images/player/idle.svg" id="3_p47bc"]
+[ext_resource type="Texture2D" uid="uid://dd1y8hnt6rw6d" path="res://assets/images/player/tomate.svg" id="4_p47bc"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_75vfm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_p47bc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_p47bc")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_p47bc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_lvxji")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_p47bc")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 6.0
+}]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dovo2"]
 radius = 31.0
@@ -9,11 +40,12 @@ radius = 31.0
 [node name="Player" type="CharacterBody2D" unique_id=1377003254]
 script = ExtResource("1_dovo2")
 
-[node name="ShootPoint" type="Marker2D" parent="." unique_id=1535092427]
-
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1961429078]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=705609025]
 position = Vector2(1.5, 0)
-texture = ExtResource("1_8afob")
+sprite_frames = SubResource("SpriteFrames_75vfm")
+animation = &"walk"
+
+[node name="ShootPoint" type="Marker2D" parent="." unique_id=1535092427]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1535793536]
 position = Vector2(1.5, 0)

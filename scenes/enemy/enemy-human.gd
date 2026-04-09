@@ -1,45 +1,62 @@
 extends CharacterBody2D
 
+@export var speed := 100
+@onready var sprite: Sprite2D = $Sprite2D
 @onready var target = $"../Player"
 
-@export var speed := 100
-
-@onready var sprite = $Sprite2D
-
-# ===== KNOCKBACK =====
-var knockback_velocity = Vector2.ZERO
+# Knockback
+var knockback_velocity: Vector2 = Vector2.ZERO
 @export var knockback_friction := 80
+
+# Referensi ke DamageArea (aman dari error null)
+@onready var damage_area: Area2D = get_node_or_null("DamageArea")
 
 func _ready():
 	add_to_group("enemies")
 	
-func flash_red():
-	sprite.modulate = Color(1, 0.2, 0.2) # merah
-	await get_tree().create_timer(0.1).timeout
-	sprite.modulate = Color(1, 1, 1) # balik normal
+	if damage_area:
+		damage_area.body_entered.connect(_on_damage_area_body_entered)
+	else:
+		push_error("DamageArea tidak ditemukan! Pastikan node bernama 'DamageArea' ada di dalam scene Enemy.")
+
 func _physics_process(delta):
 	if target == null:
 		return
 
+	# Flip sprite berdasarkan arah gerak
+	if velocity.x != 0:
+		sprite.flip_h = velocity.x > 0
+
 	var direction = (target.global_position - global_position).normalized()
 
-	# ===== CEK KNOCKBACK =====
+	# Logika knockback
 	if knockback_velocity.length() > 10:
 		velocity = knockback_velocity
 	else:
 		velocity = direction * speed
 
-	# 🔥 WAJIB DI LUAR IF
 	move_and_slide()
 
-	# ===== REDUCE KNOCKBACK =====
-	knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, knockback_friction * delta)
+	# Reduksi knockback secara bertahap
+	knockback_velocity = knockback_velocity.move_toward(
+		Vector2.ZERO, knockback_friction * delta
+	)
 
+# Fungsi saat player memasuki area damage
+func _on_damage_area_body_entered(body):
+	print("Masuk ke DamageArea:", body.name)
+	if body.is_in_group("player"):
+		print("Player terkena damage!")
+		body.take_damage(global_position)
 
+# Efek knockback ketika terkena peluru
 func apply_knockback(from_position: Vector2, power: float):
-	print("KENA KNOCKBACK 💥")
-
 	var dir = (global_position - from_position).normalized()
-	knockback_velocity = dir * power * 0.3
+	knockback_velocity = dir * power
+	flash_red()
 
-	flash_red() # 🔥 TAMBAH INI
+# Efek flash merah saat terkena damage
+func flash_red():
+	sprite.modulate = Color(1, 0.2, 0.2)
+	await get_tree().create_timer(0.1).timeout
+	sprite.modulate = Color(1, 1, 1)

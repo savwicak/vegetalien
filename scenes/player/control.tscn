@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://bfhthmfktl17j"]
+
+[ext_resource type="FontFile" uid="uid://dawt34xdwomdt" path="res://assets/fonts/Grow Year.otf" id="1_v88o1"]
+[ext_resource type="Texture2D" uid="uid://dxo6qeup14pee" path="res://assets/images/ui/stamina.svg" id="2_tx12h"]
+[ext_resource type="Texture2D" uid="uid://c5sd18d887el6" path="res://assets/images/ui/stamina1.svg" id="3_3qe1u"]
+[ext_resource type="Texture2D" uid="uid://81extqvo3sn2" path="res://assets/images/ui/stamina2.svg" id="4_dqp6d"]
+[ext_resource type="Texture2D" uid="uid://cn64s8tajrcut" path="res://assets/images/ui/stamina3.svg" id="5_w8x4s"]
+[ext_resource type="Texture2D" uid="uid://6l6y7t006bo7" path="res://assets/images/ui/stamina4.svg" id="6_0j4m3"]
+
+[node name="Control" type="Control" unique_id=736061556]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="." unique_id=1009052607]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("1_v88o1")
+theme_override_font_sizes/font_size = 60
+text = "Stamina"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=486271319]
+layout_mode = 1
+offset_right = 3039.0
+offset_bottom = 96.0
+pivot_offset = Vector2(20, 20)
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer" unique_id=493301356]
+layout_mode = 2
+texture = ExtResource("2_tx12h")
+
+[node name="TextureRect2" type="TextureRect" parent="HBoxContainer" unique_id=2128536985]
+layout_mode = 2
+texture = ExtResource("3_3qe1u")
+
+[node name="TextureRect3" type="TextureRect" parent="HBoxContainer" unique_id=591524179]
+layout_mode = 2
+texture = ExtResource("4_dqp6d")
+
+[node name="TextureRect4" type="TextureRect" parent="HBoxContainer" unique_id=1347355169]
+layout_mode = 2
+texture = ExtResource("5_w8x4s")
+
+[node name="TextureRect5" type="TextureRect" parent="HBoxContainer" unique_id=1152016062]
+layout_mode = 2
+texture = ExtResource("6_0j4m3")

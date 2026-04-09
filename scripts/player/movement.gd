@@ -1,56 +1,109 @@
 extends CharacterBody2D
 
+# ===== NODE REFERENCES =====
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var shoot_point: Node2D = $ShootPoint
+@onready var camera: Camera2D = $Camera2D
+
 # ===== SHOOTING =====
 @export var bullet_scene: PackedScene
-@onready var shoot_point = $ShootPoint
 
 # ===== MOVEMENT =====
-@export var max_speed := 200
-@export var acceleration := 800
-@export var friction := 600
+@export var max_speed: float = 200.0
+@export var acceleration: float = 800.0
+@export var friction: float = 600.0
+
+# ===== STAMINA SYSTEM =====
+@export var max_stamina: int = 5
+var current_stamina: int = 0
+
+# Drag setiap node bar stamina dari editor ke array ini
+@export var stamina_bars: Array[NodePath]
+var stamina_nodes: Array[Node] = []
+
+# ===== DAMAGE & KNOCKBACK =====
+@export var knockback_power: float = 400.0
+@export var knockback_friction: float = 800.0
+@export var flash_duration: float = 0.1
+var knockback_velocity: Vector2 = Vector2.ZERO
+var is_invincible: bool = false
 
 # ===== CAMERA SHAKE =====
-@export var shake_fade := 5.0
-var shake_strength := 0.0
-var rng = RandomNumberGenerator.new()
+@export var shake_fade: float = 5.0
+var shake_strength: float = 0.0
+var rng := RandomNumberGenerator.new()
 
-@onready var camera = $Camera2D
-
+# ==========================================================
+# READY
+# ==========================================================
 func _ready():
 	rng.randomize()
+	add_to_group("player")
 
+	# Ambil referensi stamina bar dari NodePath
+	for path in stamina_bars:
+		var node = get_node_or_null(path)
+		if node:
+			stamina_nodes.append(node)
+
+	update_stamina_ui()
+
+# ==========================================================
+# PHYSICS PROCESS
+# ==========================================================
 func _physics_process(delta):
-	# ===== INPUT =====
+	handle_movement(delta)
+	handle_animation()
+	handle_shooting()
+	handle_camera_shake(delta)
+
+	move_and_slide()
+
+# ==========================================================
+# MOVEMENT & KNOCKBACK
+# ==========================================================
+func handle_movement(delta):
+	if knockback_velocity.length() > 10:
+		velocity = knockback_velocity
+		knockback_velocity = knockback_velocity.move_toward(
+			Vector2.ZERO, knockback_friction * delta
+		)
+		return
+
 	var input_dir = Vector2.ZERO
 	input_dir.x = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
 	input_dir.y = Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
 	input_dir = input_dir.normalized()
 
-	# ===== SHOOT =====
-	if Input.is_action_just_pressed("shoot"):
-		shoot()
-
-	# ===== MOVEMENT =====
 	if input_dir != Vector2.ZERO:
 		velocity = velocity.move_toward(input_dir * max_speed, acceleration * delta)
-		
 	else:
 		velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
 
-	move_and_slide()
+# ==========================================================
+# ANIMATION
+# ==========================================================
+func handle_animation():
+	if velocity.x != 0:
+		sprite.flip_h = velocity.x < 0
 
-	# ===== CAMERA SHAKE =====
-	if shake_strength > 0:
-		shake_strength = lerp(shake_strength, 0.0, shake_fade * delta)
-		
-		camera.offset = Vector2(
-			rng.randf_range(-shake_strength, shake_strength),
-			rng.randf_range(-shake_strength, shake_strength)
-		)
+	if velocity.length() > 10:
+		sprite.play("walk")
 	else:
-		camera.offset = Vector2.ZERO
+		sprite.play("idle")
 
-# ===== SHOOT FUNCTION =====
+# ==========================================================
+# SHOOTING WITH STAMINA
+# ==========================================================
+func handle_shooting():
+	if Input.is_action_just_pressed("shoot"):
+		if current_stamina >= max_stamina:
+			shoot()
+			current_stamina = 0
+			update_stamina_ui()
+		else:
+			print("Stamina belum penuh!")
+
 func shoot():
 	if bullet_scene == null:
 		print("BELUM MASUKIN BULLET SCENE")
@@ -64,10 +117,54 @@ func shoot():
 	bullet.rotation = direction.angle()
 
 	get_tree().current_scene.add_child(bullet)
-
 	shake(5)
 
+# ==========================================================
+# STAMINA SYSTEM
+# ==========================================================
+func add_stamina(amount: int = 1):
+	current_stamina = clamp(current_stamina + amount, 0, max_stamina)
+	update_stamina_ui()
 
-# ===== CAMERA SHAKE FUNCTION =====
+func update_stamina_ui():
+	for i in range(stamina_nodes.size()):
+		stamina_nodes[i].visible = i < current_stamina
+
+# ==========================================================
+# DAMAGE, KNOCKBACK & FLASH
+# ==========================================================
+func take_damage(from_position: Vector2):
+	if is_invincible:
+		return
+
+	is_invincible = true
+
+	var direction = (global_position - from_position).normalized()
+	knockback_velocity = direction * knockback_power
+
+	flash_red()
+	shake(8)
+
+	await get_tree().create_timer(0.5).timeout
+	is_invincible = false
+
+func flash_red():
+	sprite.modulate = Color(1, 0.2, 0.2)
+	await get_tree().create_timer(flash_duration).timeout
+	sprite.modulate = Color(1, 1, 1)
+
+# ==========================================================
+# CAMERA SHAKE
+# ==========================================================
 func shake(power: float):
 	shake_strength = power
+
+func handle_camera_shake(delta):
+	if shake_strength > 0:
+		shake_strength = lerp(shake_strength, 0.0, shake_fade * delta)
+		camera.offset = Vector2(
+			rng.randf_range(-shake_strength, shake_strength),
+			rng.randf_range(-shake_strength, shake_strength)
+		)
+	else:
+		camera.offset = Vector2.ZERO

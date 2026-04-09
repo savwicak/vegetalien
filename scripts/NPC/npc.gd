@@ -22,4 +22,4 @@ func _on_body_exited(body):
 		$Label.visible = false  # 👈 HILANG
 
 func start_dialog():
-	print("Dialog dimulai!")
+	Dialogic.start("mashdoom")
