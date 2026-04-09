@@ -26,7 +26,8 @@ directories/dch_directory={
 "tomato": "res://dialog/tomato.dch"
 }
 directories/dtl_directory={
-"mashdoom": "res://dialog/mashdoom.dtl"
+"mashdoom": "res://dialog/mashdoom.dtl",
+"to_pemukiman": "res://dialog/to_pemukiman.dtl"
 }
 layout/style_directory={
 "": "res://dialog/dialogstyle.tres",

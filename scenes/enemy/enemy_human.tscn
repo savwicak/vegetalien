@@ -13,6 +13,7 @@ height = 136.0
 
 [node name="Enemy-human" type="CharacterBody2D" unique_id=47528080]
 script = ExtResource("1_i3nfm")
+speed = 50
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1055287291]
 texture = ExtResource("2_i3nfm")
@@ -27,5 +28,7 @@ collision_layer = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea" unique_id=799938184]
 position = Vector2(1, 40)
 shape = SubResource("CapsuleShape2D_0x7br")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=54431917]
 
 [connection signal="body_entered" from="DamageArea" to="." method="_on_damage_area_body_entered"]

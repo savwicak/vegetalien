@@ -11,37 +11,3 @@ script = ExtResource("1_8n5b5")
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="." unique_id=1267425464]
 position = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_5wfo2")
-
-[node name="Panel" type="Panel" parent="." unique_id=277823397]
-offset_left = -142.0
-offset_top = -118.0
-offset_right = 132.0
-offset_bottom = -64.0
-metadata/_edit_use_anchors_ = true
-
-[node name="Label" type="Label" parent="Panel" unique_id=348053874]
-layout_mode = 0
-offset_left = 63.0
-offset_top = 14.0
-offset_right = 211.0
-offset_bottom = 37.0
-text = "Go to pemukiman"
-metadata/_edit_use_anchors_ = true
-
-[node name="ButtonYes" type="Button" parent="Panel" unique_id=2140045101]
-layout_mode = 0
-offset_left = 203.0
-offset_top = 59.0
-offset_right = 238.0
-offset_bottom = 90.0
-text = "Yes"
-metadata/_edit_use_anchors_ = true
-
-[node name="ButtonNo" type="Button" parent="Panel" unique_id=1941793717]
-layout_mode = 0
-offset_left = 243.0
-offset_top = 59.0
-offset_right = 274.0
-offset_bottom = 90.0
-text = "No"
-metadata/_edit_use_anchors_ = true

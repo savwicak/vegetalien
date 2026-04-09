@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://38jnj3415fyp"]
 
-[ext_resource type="Script" uid="uid://cir46dv18r72g" path="res://scenes/enemy/enemy-human.gd" id="1_tcmhl"]
+[ext_resource type="Script" uid="uid://cir46dv18r72g" path="res://scripts/enemy/enemy-human.gd" id="1_tcmhl"]
 [ext_resource type="Texture2D" uid="uid://b45mxjvsgnj57" path="res://assets/images/enemy-human2.svg" id="3_37qjk"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_tcmhl"]
@@ -28,3 +28,5 @@ collision_layer = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea" unique_id=917326179]
 position = Vector2(4, 43)
 shape = SubResource("CapsuleShape2D_37qjk")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=1330585269]

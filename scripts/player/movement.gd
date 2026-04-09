@@ -14,17 +14,19 @@ extends CharacterBody2D
 @export var friction: float = 600.0
 
 # ===== STAMINA SYSTEM =====
-@export var max_stamina: int = 5
-var current_stamina: int = 0
+@export var max_stamina := 100.0
+@export var stamina_gain := 20.0
+var current_stamina := 0.0
 
-# Drag setiap node bar stamina dari editor ke array ini
-@export var stamina_bars: Array[NodePath]
-var stamina_nodes: Array[Node] = []
+# UI stamina (drag ProgressBar ke sini di Inspector)
+@export var stamina_ui_path: NodePath
+@onready var stamina_bar: TextureProgressBar = $"../CanvasLayer/Control"
 
 # ===== DAMAGE & KNOCKBACK =====
 @export var knockback_power: float = 400.0
 @export var knockback_friction: float = 800.0
 @export var flash_duration: float = 0.1
+
 var knockback_velocity: Vector2 = Vector2.ZERO
 var is_invincible: bool = false
 
@@ -39,12 +41,19 @@ var rng := RandomNumberGenerator.new()
 func _ready():
 	rng.randomize()
 	add_to_group("player")
+	var node = get_node_or_null(stamina_ui_path)
+	print(get_node(stamina_ui_path))
 
-	# Ambil referensi stamina bar dari NodePath
-	for path in stamina_bars:
-		var node = get_node_or_null(path)
-		if node:
-			stamina_nodes.append(node)
+	if node is ProgressBar:
+		stamina_bar = node
+	elif node != null:
+		stamina_bar = node.get_node_or_null("ProgressBar")
+
+	if stamina_bar == null:
+		push_error("ProgressBar tidak ditemukan!")
+	else:
+		stamina_bar.max_value = max_stamina
+		stamina_bar.value = current_stamina
 
 	update_stamina_ui()
 
@@ -120,15 +129,18 @@ func shoot():
 	shake(5)
 
 # ==========================================================
-# STAMINA SYSTEM
+# STAMINA
 # ==========================================================
-func add_stamina(amount: int = 1):
+func add_stamina(amount: float):
 	current_stamina = clamp(current_stamina + amount, 0, max_stamina)
 	update_stamina_ui()
 
 func update_stamina_ui():
-	for i in range(stamina_nodes.size()):
-		stamina_nodes[i].visible = i < current_stamina
+	if stamina_bar:
+		stamina_bar.max_value = max_stamina
+		stamina_bar.value = current_stamina
+	else:
+		push_warning("StaminaBar tidak ditemukan!")
 
 # ==========================================================
 # DAMAGE, KNOCKBACK & FLASH
