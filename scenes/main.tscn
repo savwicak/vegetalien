@@ -463,5 +463,5 @@ position = Vector2(630, 918)
 position = Vector2(1823, 2677)
 
 [node name="Player" parent="." unique_id=1377003254 instance=ExtResource("2_0wfyh")]
-position = Vector2(2712, 770)
+position = Vector2(5908, 3690)
 bullet_scene = ExtResource("21_yc10j")

@@ -59,14 +59,12 @@ func shoot():
 	var bullet = bullet_scene.instantiate()
 	bullet.global_position = shoot_point.global_position
 
-	# arah ke mouse 🔥
 	var direction = (get_global_mouse_position() - shoot_point.global_position).normalized()
 	bullet.direction = direction
 	bullet.rotation = direction.angle()
 
 	get_tree().current_scene.add_child(bullet)
 
-	# optional: shake dikit biar keren
 	shake(5)
 
 
