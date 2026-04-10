@@ -471,7 +471,7 @@ position = Vector2(6556, 4290)
 max_energy = 30
 
 [node name="EnergySpawner2" parent="." unique_id=90492413 instance=ExtResource("23_y6deb")]
-position = Vector2(3266, 952)
+position = Vector2(3028, 921)
 max_energy = 30
 
 [node name="Player" parent="." unique_id=1377003254 instance=ExtResource("2_0wfyh")]
@@ -489,7 +489,7 @@ position = Vector2(5844, 4250)
 
 [node name="Carrot" parent="." unique_id=642197605 instance=ExtResource("29_yq6so")]
 z_index = 30
-position = Vector2(1887, 1311)
+position = Vector2(1877, 1363)
 script = ExtResource("22_yq6so")
 
 [node name="To Pemukiman" parent="." unique_id=1779487322 instance=ExtResource("11_ya4ey")]
