@@ -1,8 +1,5 @@
 extends Node2D
 
-# ==========================================================
-# ENUM STATE GAME
-# ==========================================================
 enum GameState {
 	TUTORIAL,
 	STORY,
@@ -10,48 +7,67 @@ enum GameState {
 }
 
 var current_state = GameState.TUTORIAL
-var tutorial_started = false
 
-# Gunakan @onready agar node sudah berada di scene tree
-@onready var trigger = get_node_or_null("../scenes/enemy/enemy_animal.gd")
+@export var tutorial_timeline: String = "tutorial"
+@export var after_tutorial_timeline: String = "after_tutorial"
 
-@export var timeline_name: String = "tutorial"
+# ===== COUNTER SIGNAL =====
+@export var required_tutorial_done: int = 2  # Jumlah signal yang dibutuhkan
+var tutorial_done_count: int = 0             # Counter saat ini
 
-# ==========================================================
-# READY
-# ==========================================================
 func _ready():
-	# Hubungkan signal hanya sekali saat node siap
-	if trigger:
-		if not trigger.tutorial_done.is_connected(_on_tutorial_done):
-			trigger.tutorial_done.connect(_on_tutorial_done)
-			print("Signal tutorial_done berhasil dihubungkan!")
-	else:
-		push_warning("Trigger tidak ditemukan! Pastikan path '../Trigger' benar.")
+	# Hubungkan signal dari EventBus
+	if EventBus and not EventBus.tutorial_done.is_connected(_on_tutorial_done):
+		EventBus.tutorial_done.connect(_on_tutorial_done)
+		print("GameManager terhubung ke EventBus.")
 
-	# Jalankan tutorial saat game dimulai
-	start_tutorial()
+	# Mulai tutorial hanya jika berada di scene main
+	if get_tree().current_scene and \
+		get_tree().current_scene.scene_file_path.ends_with("main.tscn"):
+		start_tutorial()
 
-# ==========================================================
-# MENJALANKAN TUTORIAL
-# ==========================================================
 func start_tutorial():
-	if not tutorial_started:
-		tutorial_started = true
-		current_state = GameState.TUTORIAL
-		print("Memulai tutorial...")
-		Dialogic.start(timeline_name)
+	print("Memulai tutorial...")
+	current_state = GameState.TUTORIAL
+	if Dialogic:
+		Dialogic.start(tutorial_timeline)
+	else:
+		push_warning("Dialogic tidak ditemukan!")
 
-# ==========================================================
-# MENERIMA SIGNAL DARI TRIGGER
-# ==========================================================
+# ===== MENERIMA SIGNAL =====
 func _on_tutorial_done():
-	print("Tutorial selesai!")
+	tutorial_done_count += 1
+	print("tutorial_done diterima:", tutorial_done_count, "/", required_tutorial_done)
+
+	# Jalankan dialog hanya jika jumlah signal sudah mencukupi
+	if tutorial_done_count >= required_tutorial_done:
+		start_after_tutorial_dialog()
+
+func start_after_tutorial_dialog():
+	# Hindari pemanggilan berulang
+	if current_state != GameState.TUTORIAL:
+		return
+
+	print("Semua syarat terpenuhi! Memulai dialog lanjutan...")
+	current_state = GameState.STORY
+
+	if Dialogic:
+		Dialogic.start(after_tutorial_timeline)
+
+		# Tunggu sampai dialog selesai sebelum masuk ke state PLAYING
+		if Dialogic.has_signal("timeline_ended") and \
+			not Dialogic.timeline_ended.is_connected(_on_after_timeline_finished):
+			Dialogic.timeline_ended.connect(_on_after_timeline_finished)
+	else:
+		push_warning("Dialogic tidak ditemukan!")
+		start_game()
+
+func _on_after_timeline_finished():
+	if Dialogic.timeline_ended.is_connected(_on_after_timeline_finished):
+		Dialogic.timeline_ended.disconnect(_on_after_timeline_finished)
+
 	current_state = GameState.PLAYING
 	start_game()
 
-# ==========================================================
-# MEMULAI GAME SETELAH TUTORIAL
-# ==========================================================
 func start_game():
 	print("Game dimulai! Enemy sekarang bisa aktif.")

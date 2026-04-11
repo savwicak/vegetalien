@@ -472,7 +472,7 @@ shape = SubResource("CircleShape2D_85g3d")
 [node name="border" parent="Map/MapHutan" unique_id=407128119 instance=ExtResource("6_ya4ey")]
 
 [node name="EnergySpawner" parent="." unique_id=742458288 instance=ExtResource("23_y6deb")]
-position = Vector2(6556, 4290)
+position = Vector2(6650, 4218)
 max_energy = 30
 
 [node name="EnergySpawner2" parent="." unique_id=90492413 instance=ExtResource("23_y6deb")]
@@ -481,7 +481,7 @@ rotation = 3.0772796
 
 [node name="Player" parent="." unique_id=2078378948 instance=ExtResource("2_0wfyh")]
 z_index = 30
-position = Vector2(583, 631)
+position = Vector2(1812, 2510)
 
 [node name="EnemyHuman" parent="." unique_id=520596125 instance=ExtResource("3_sugp2")]
 z_index = 30

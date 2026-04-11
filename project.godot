@@ -22,6 +22,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 Dialogic="*uid://ds2q0uclmolvu"
+GameManager="*uid://cyea1k5d7cgr6"
+EventBus="*uid://cd5vek3hsmlgl"
 
 [dialogic]
 
@@ -34,6 +36,7 @@ directories/dch_directory={
 "tomato": "res://dialog/tomato.dch"
 }
 directories/dtl_directory={
+"after_tutorial": "res://dialog/after_tutorial.dtl",
 "elepant": "res://dialog/elepant.dtl",
 "mashdoom": "res://dialog/mashdoom.dtl",
 "meet_carrot": "res://dialog/meet_carrot.dtl",

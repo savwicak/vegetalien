@@ -13,7 +13,7 @@ narrator: If stamina is full you can shoot a Virus
 narrator: Left click to shoot
 [signal arg="tutorial_end"]
 [wait time="1.0"]
-narrator: I feel like something chasing me, They're must be really hungry
+tomato: I feel like something chasing me, They're must be really hungry
 tomato: WHAT!!! NO!!! I DONT WANNA BE EATEN!!
 
 tomato: I NEED TO SHOOT THEM!

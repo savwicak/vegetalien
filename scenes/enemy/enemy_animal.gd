@@ -96,7 +96,7 @@ func _physics_process(delta):
 
 	# Flip sprite berdasarkan arah gerak
 	if velocity.x != 0:
-		sprite.flip_h = velocity.x > 0
+		sprite.flip_h = velocity.x < 0
 
 	move_and_slide()
 
@@ -150,5 +150,5 @@ func flash_red():
 func die():
 	is_dead = true
 	print("Enemy mati!")
-	emit_signal("tutorial_done")  # Mengirim signal ke sistem lain jika diperlukan
+	EventBus.emit_signal("tutorial_done") # Mengirim signal ke sistem lain jika diperlukan
 	queue_free()
