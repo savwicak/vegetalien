@@ -18,8 +18,11 @@ extends CharacterBody2D
 @export var stamina_gain := 20.0
 var current_stamina := 0.0
 
-# UI stamina (drag ProgressBar ke sini di Inspector)
 @onready var stamina_bar: TextureProgressBar = get_node("/root/Main/CanvasLayer/Control/ProgressBar")
+
+# ===== 💀 HP SYSTEM (BARU) =====
+@export var max_hp := 5
+var current_hp := 5
 
 # ===== DAMAGE & KNOCKBACK =====
 @export var knockback_power: float = 400.0
@@ -28,6 +31,7 @@ var current_stamina := 0.0
 
 var knockback_velocity: Vector2 = Vector2.ZERO
 var is_invincible: bool = false
+var is_dead: bool = false # 🔥 penting
 
 # ===== CAMERA SHAKE =====
 @export var shake_fade: float = 5.0
@@ -50,6 +54,9 @@ func _ready():
 # PHYSICS PROCESS
 # ==========================================================
 func _physics_process(delta):
+	if is_dead:
+		return
+
 	handle_movement(delta)
 	handle_animation()
 	handle_shooting()
@@ -123,7 +130,6 @@ func shoot():
 func add_stamina(amount: float):
 	current_stamina = clamp(current_stamina + amount, 0, max_stamina)
 
-	# efek kecil
 	scale = Vector2(1.1, 1.1)
 	await get_tree().create_timer(0.05).timeout
 	scale = Vector2(1,1)
@@ -134,16 +140,18 @@ func update_stamina_ui():
 	if stamina_bar:
 		var tween = create_tween()
 		tween.tween_property(stamina_bar, "value", current_stamina, 0.2)
-	else:
-		push_warning("StaminaBar tidak ditemukan!")
+
 # ==========================================================
-# DAMAGE, KNOCKBACK & FLASH
+# 💀 DAMAGE (UPDATED)
 # ==========================================================
 func take_damage(from_position: Vector2):
-	if is_invincible:
+	if is_invincible or is_dead:
 		return
 
 	is_invincible = true
+
+	current_hp -= 1
+	print("HP:", current_hp)
 
 	var direction = (global_position - from_position).normalized()
 	knockback_velocity = direction * knockback_power
@@ -151,12 +159,41 @@ func take_damage(from_position: Vector2):
 	flash_red()
 	shake(8)
 
-	# Mengurangi HP melalui UI
+	# UI HEART SYSTEM (TETEP DIPAKE)
 	get_node("/root/Main/CanvasLayer/HBoxContainer").take_damage(1)
+
+	# 🔥 CEK MATI
+	if current_hp <= 0:
+		die()
+		return
 
 	await get_tree().create_timer(0.5).timeout
 	is_invincible = false
 
+# ==========================================================
+# 💀 DIE (BARU)
+# ==========================================================
+func die():
+	if is_dead:
+		return
+
+	is_dead = true
+	print("PLAYER MATI")
+
+	velocity = Vector2.ZERO
+	set_physics_process(false)
+
+	# OPTIONAL VISUAL
+	sprite.play("idle")
+	modulate = Color(0.5, 0.5, 0.5)
+
+	# 🔥 KIRIM KE GAME MANAGER
+	if EventBus:
+		EventBus.emit_signal("player_died")
+
+# ==========================================================
+# FLASH
+# ==========================================================
 func flash_red():
 	sprite.modulate = Color(1, 0.2, 0.2)
 	await get_tree().create_timer(flash_duration).timeout
@@ -177,50 +214,35 @@ func handle_camera_shake(delta):
 		)
 	else:
 		camera.offset = Vector2.ZERO
-		
 
+# ==========================================================
+# ================= TUTORIAL SYSTEM (TETEP ADA) =============
+# ==========================================================
 @export var timeline_name: String = "tutorial"
 
 @onready var player = $"../Player"
 
 var waiting_for_move = false
 
-# ==================================================
-# START TUTORIAL
-# ==================================================
 func run_tutorial():
 	Dialogic.start(timeline_name)
 
 	if not Dialogic.signal_event.is_connected(_on_dialogic_signal):
 		Dialogic.signal_event.connect(_on_dialogic_signal)
 
-# ==================================================
-# SIGNAL DARI DIALOGIC
-# ==================================================
 func _on_dialogic_signal(argument: String):
 	print("SIGNAL:", argument)
 
 	if argument == "tunggu_gerak":
 		waiting_for_move = true
-		
-		# kasih kontrol ke player
 		player.set_physics_process(true)
-
-		# pause dialog
 		Dialogic.pause()
 
-# ==================================================
-# CEK PLAYER GERAK
-# ==================================================
 func _process(delta):
 	if waiting_for_move:
 		if player.velocity.length() > 0:
 			print("PLAYER UDAH GERAK!")
 
 			waiting_for_move = false
-
-			# matiin player lagi (biar lanjut dialog)
 			player.set_physics_process(false)
-
-			# lanjut dialog 🔥
 			Dialogic.resume()

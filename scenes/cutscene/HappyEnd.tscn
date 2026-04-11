@@ -1,19 +1,19 @@
 [gd_scene format=3 uid="uid://bb3yusqq0424n"]
 
-[sub_resource type="VideoStreamTheora" id="VideoStreamTheora_7jd0f"]
+[ext_resource type="VideoStream" uid="uid://lcwvh7oys6ny" path="res://scenes/cutscene/Vegetalien-_-backstory(fix).ogv" id="1_divfh"]
 
 [node name="HappyEnd" type="Control" unique_id=766849625]
 layout_mode = 3
 anchors_preset = 0
 
-[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="." unique_id=1757693680]
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="." unique_id=577385445]
 texture_filter = 3
 layout_mode = 0
-offset_left = 3.0
+offset_left = 71.0
 offset_top = 1.0
-offset_right = 1152.0
-offset_bottom = 647.0
-stream = SubResource("VideoStreamTheora_7jd0f")
+offset_right = 1084.0
+offset_bottom = 637.0
+stream = ExtResource("1_divfh")
 expand = true
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1975150629]

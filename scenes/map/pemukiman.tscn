@@ -9,11 +9,22 @@ size = Vector2(1547, 405.125)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8l6t1"]
 size = Vector2(740, 617.625)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_17of2"]
-size = Vector2(489, 727.5)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e15ic"]
+size = Vector2(458, 361)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6kned"]
+radius = 292.8276
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_6kned"]
+radius = 232.0
+height = 734.5
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lkla0"]
-size = Vector2(684, 746)
+size = Vector2(684, 402)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8l6t1"]
+radius = 269.0
+height = 712.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_aev45"]
 size = Vector2(837.75, 145.75)
@@ -60,16 +71,24 @@ position = Vector2(585, -712.375)
 shape = SubResource("RectangleShape2D_8l6t1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=591272519]
-position = Vector2(1915.5, 881.5)
-shape = SubResource("RectangleShape2D_17of2")
+position = Vector2(1923, 1056.5)
+shape = SubResource("RectangleShape2D_e15ic")
+
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="." unique_id=842731238]
+position = Vector2(2155, 807)
+shape = SubResource("CircleShape2D_6kned")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="." unique_id=420074735]
 position = Vector2(-2164, 752.75)
-shape = SubResource("RectangleShape2D_17of2")
+shape = SubResource("CapsuleShape2D_6kned")
 
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="." unique_id=1905834428]
-position = Vector2(-1270, 719)
+position = Vector2(-1270, 891)
 shape = SubResource("RectangleShape2D_lkla0")
+
+[node name="CollisionShape2D13" type="CollisionShape2D" parent="." unique_id=2081886374]
+position = Vector2(-1205, 686)
+shape = SubResource("CapsuleShape2D_8l6t1")
 
 [node name="CollisionShape2D6" type="CollisionShape2D" parent="." unique_id=809814657]
 position = Vector2(823.125, 943.875)

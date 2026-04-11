@@ -8,11 +8,13 @@ layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_4rkwq")
 
-[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="." unique_id=1895237485]
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="." unique_id=49126915]
 texture_filter = 3
 layout_mode = 0
-offset_right = 1149.0
-offset_bottom = 643.0
+offset_left = 71.0
+offset_top = 1.0
+offset_right = 1084.0
+offset_bottom = 637.0
 stream = ExtResource("2_lxpo4")
 expand = true
 

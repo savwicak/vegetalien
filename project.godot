@@ -40,7 +40,9 @@ directories/dtl_directory={
 "elepant": "res://dialog/elepant.dtl",
 "mashdoom": "res://dialog/mashdoom.dtl",
 "meet_carrot": "res://dialog/meet_carrot.dtl",
+"quest_pemukiman_selesai": "res://dialog/quest_pemukiman_selesai.dtl",
 "to_pemukiman": "res://dialog/to_pemukiman.dtl",
+"tree_dialog": "res://dialog/tree_dialog.dtl",
 "tutorial": "res://dialog/tutorial.dtl"
 }
 layout/style_directory={

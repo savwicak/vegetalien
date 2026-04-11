@@ -22,6 +22,7 @@
 [ext_resource type="Texture2D" uid="uid://b4exo7nhiinbo" path="res://assets/map_pemukiman/Rumah.svg" id="8_yc10j"]
 [ext_resource type="PackedScene" uid="uid://cvnd5o66dm4fk" path="res://scenes/ui/teleport/to_pemukiman.tscn" id="11_ya4ey"]
 [ext_resource type="PackedScene" uid="uid://bkep6t43tlq3a" path="res://scenes/map/pemukiman.tscn" id="12_eb6dy"]
+[ext_resource type="Script" uid="uid://cir46dv18r72g" path="res://scripts/enemy/enemy-human.gd" id="20_kmb1v"]
 [ext_resource type="Script" uid="uid://dh4ru2l8yw7fv" path="res://scripts/NPC/carrot.gd" id="22_yq6so"]
 [ext_resource type="PackedScene" uid="uid://cpewc8dnjdqcc" path="res://scenes/player/energy_spawner.tscn" id="23_y6deb"]
 [ext_resource type="Texture2D" uid="uid://bfoso5judrwbi" path="res://assets/images/ui/newHear.svg" id="24_2wyq8"]
@@ -32,9 +33,10 @@
 [ext_resource type="PackedScene" uid="uid://cqweitjobn7wo" path="res://scenes/enemy/elepant.tscn" id="30_fv21b"]
 [ext_resource type="PackedScene" uid="uid://b3h4ybu0ex873" path="res://scenes/enemy/enemy_animal.tscn" id="31_if84o"]
 [ext_resource type="PackedScene" uid="uid://b2eqrhboscnrf" path="res://scenes/enemy_animal_2.tscn" id="32_k4hdi"]
-[ext_resource type="PackedScene" uid="uid://c8bf5yo23uah0" path="res://scenes/alien/mushroom.tscn" id="33_gyw60"]
-[ext_resource type="Script" uid="uid://cvxupp63o7t4l" path="res://scenes/alien/mushroom.gd" id="34_dsaxs"]
+[ext_resource type="PackedScene" uid="uid://clhmrpo0yg23" path="res://scenes/alien/mashdoom.tscn" id="34_fuf3a"]
 [ext_resource type="PackedScene" uid="uid://codnh8qcqjqfk" path="res://scenes/enemy/elepant_spawner.tscn" id="35_j8jky"]
+[ext_resource type="PackedScene" uid="uid://bvutpj121blpc" path="res://scenes/map/pohon_main.tscn" id="37_fuf3a"]
+[ext_resource type="PackedScene" uid="uid://d2d3258r85v88" path="res://scenes/map/item.tscn" id="37_pibwh"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_85g3d"]
 radius = 320.006
@@ -473,6 +475,7 @@ shape = SubResource("CircleShape2D_85g3d")
 
 [node name="EnergySpawner" parent="." unique_id=742458288 instance=ExtResource("23_y6deb")]
 position = Vector2(6650, 4218)
+spawn_interval = 1.5
 max_energy = 30
 
 [node name="EnergySpawner2" parent="." unique_id=90492413 instance=ExtResource("23_y6deb")]
@@ -481,16 +484,17 @@ rotation = 3.0772796
 
 [node name="Player" parent="." unique_id=2078378948 instance=ExtResource("2_0wfyh")]
 z_index = 30
-position = Vector2(1812, 2510)
+position = Vector2(6226, 2985)
 
 [node name="EnemyHuman" parent="." unique_id=520596125 instance=ExtResource("3_sugp2")]
 z_index = 30
-position = Vector2(6965, 4502)
+position = Vector2(7195, 3804)
+script = ExtResource("20_kmb1v")
 speed = 40
 
 [node name="EnemyHuman2" parent="." unique_id=1009813409 instance=ExtResource("4_jyhfs")]
 z_index = 30
-position = Vector2(5844, 4250)
+position = Vector2(5279, 4273)
 
 [node name="EnemyAnimal" parent="." unique_id=636207033 instance=ExtResource("31_if84o")]
 position = Vector2(2349, 1157)
@@ -626,12 +630,34 @@ z_index = 10
 position = Vector2(2219, 657)
 max_health = 4
 
-[node name="Mushroom" parent="." unique_id=2098251401 instance=ExtResource("33_gyw60")]
-position = Vector2(1520, 296)
-script = ExtResource("34_dsaxs")
+[node name="Mashdoom" parent="." unique_id=1815761454 instance=ExtResource("34_fuf3a")]
+z_index = 30
+position = Vector2(6435, 2900)
 
 [node name="elepant spawner" parent="." unique_id=2098384156 instance=ExtResource("35_j8jky")]
 position = Vector2(2952, 901)
 max_energy = 30
+
+[node name="Shape" type="Node" parent="." unique_id=2050886943]
+
+[node name="Item" parent="Shape" unique_id=943727536 instance=ExtResource("37_pibwh")]
+position = Vector2(5378, 3367)
+scale = Vector2(0.67999995, 0.67999995)
+
+[node name="Item2" parent="Shape" unique_id=1126041473 instance=ExtResource("37_pibwh")]
+position = Vector2(5575, 3372)
+scale = Vector2(0.67999995, 0.67999995)
+
+[node name="Item3" parent="Shape" unique_id=1522044177 instance=ExtResource("37_pibwh")]
+position = Vector2(5767, 3367)
+scale = Vector2(0.67999995, 0.67999995)
+
+[node name="Item4" parent="Shape" unique_id=1504496940 instance=ExtResource("37_pibwh")]
+position = Vector2(5954, 3361.9998)
+scale = Vector2(0.67999995, 0.67999995)
+
+[node name="Pohon" parent="." unique_id=361298578 instance=ExtResource("37_fuf3a")]
+z_index = 40
+position = Vector2(6269, 3988)
 
 [connection signal="spawner_pemukiman" from="To Pemukiman" to="EnergySpawner" method="_on_to_pemukiman_spawner_pemukiman"]

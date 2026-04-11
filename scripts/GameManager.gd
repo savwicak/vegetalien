@@ -3,71 +3,174 @@ extends Node2D
 enum GameState {
 	TUTORIAL,
 	STORY,
-	PLAYING
+	PLAYING,
+	TREE_QUEST
 }
 
 var current_state = GameState.TUTORIAL
 
 @export var tutorial_timeline: String = "tutorial"
 @export var after_tutorial_timeline: String = "after_tutorial"
+@export var tree_after_timeline: String = "tree_after_quest"
 
-# ===== COUNTER SIGNAL =====
-@export var required_tutorial_done: int = 2  # Jumlah signal yang dibutuhkan
-var tutorial_done_count: int = 0             # Counter saat ini
+# ===== COUNTER TUTORIAL =====
+@export var required_tutorial_done: int = 2
+var tutorial_done_count: int = 0
+
+# ===== STATE =====
+var game_started := false
 
 func _ready():
-	# Hubungkan signal dari EventBus
-	if EventBus and not EventBus.tutorial_done.is_connected(_on_tutorial_done):
-		EventBus.tutorial_done.connect(_on_tutorial_done)
+	if EventBus:
+		connect_signal_safe(EventBus.tutorial_done, _on_tutorial_done)
+		connect_signal_safe(EventBus.tree_completed, _on_tree_completed)
+
+		# ENEMY SYSTEM
+		connect_signal_safe(EventBus.spawn_enemy_tutorial, _on_spawn_enemy_tutorial)
+		connect_signal_safe(EventBus.spawn_enemy_tree, _on_spawn_enemy_tree)
+
+		# PLAYER MATI
+		connect_signal_safe(EventBus.player_died, _on_player_died)
+
 		print("GameManager terhubung ke EventBus.")
 
-	# Mulai tutorial hanya jika berada di scene main
+	# 🔥 CONNECT DIALOGIC SIGNAL
+	if Dialogic and not Dialogic.signal_event.is_connected(_on_dialogic_signal):
+		Dialogic.signal_event.connect(_on_dialogic_signal)
+
+	# START TUTORIAL
 	if get_tree().current_scene and \
 		get_tree().current_scene.scene_file_path.ends_with("main.tscn"):
 		start_tutorial()
 
+# ==========================================================
+# HELPER
+# ==========================================================
+func connect_signal_safe(signal_ref, callable):
+	if not signal_ref.is_connected(callable):
+		signal_ref.connect(callable)
+
+# ==========================================================
+# ===================== TUTORIAL ============================
+# ==========================================================
 func start_tutorial():
 	print("Memulai tutorial...")
 	current_state = GameState.TUTORIAL
+
 	if Dialogic:
 		Dialogic.start(tutorial_timeline)
-	else:
-		push_warning("Dialogic tidak ditemukan!")
 
-# ===== MENERIMA SIGNAL =====
 func _on_tutorial_done():
 	tutorial_done_count += 1
-	print("tutorial_done diterima:", tutorial_done_count, "/", required_tutorial_done)
+	print("tutorial_done:", tutorial_done_count, "/", required_tutorial_done)
 
-	# Jalankan dialog hanya jika jumlah signal sudah mencukupi
 	if tutorial_done_count >= required_tutorial_done:
 		start_after_tutorial_dialog()
 
 func start_after_tutorial_dialog():
-	# Hindari pemanggilan berulang
 	if current_state != GameState.TUTORIAL:
 		return
 
-	print("Semua syarat terpenuhi! Memulai dialog lanjutan...")
+	print("Masuk STORY setelah tutorial...")
 	current_state = GameState.STORY
 
 	if Dialogic:
 		Dialogic.start(after_tutorial_timeline)
 
-		# Tunggu sampai dialog selesai sebelum masuk ke state PLAYING
-		if Dialogic.has_signal("timeline_ended") and \
-			not Dialogic.timeline_ended.is_connected(_on_after_timeline_finished):
-			Dialogic.timeline_ended.connect(_on_after_timeline_finished)
+		if Dialogic.has_signal("timeline_ended"):
+			Dialogic.timeline_ended.connect(_on_after_timeline_finished, CONNECT_ONE_SHOT)
 	else:
-		push_warning("Dialogic tidak ditemukan!")
 		start_game()
 
 func _on_after_timeline_finished():
-	if Dialogic.timeline_ended.is_connected(_on_after_timeline_finished):
-		Dialogic.timeline_ended.disconnect(_on_after_timeline_finished)
-
-	current_state = GameState.PLAYING
 	start_game()
 
+# ==========================================================
+# ===================== GAME START ==========================
+# ==========================================================
 func start_game():
-	print("Game dimulai! Enemy sekarang bisa aktif.")
+	if game_started:
+		return
+
+	game_started = true
+	current_state = GameState.PLAYING
+
+	print("Game dimulai!")
+
+	if EventBus:
+		EventBus.emit_signal("game_started")
+
+# ==========================================================
+# ===================== TREE QUEST ==========================
+# ==========================================================
+func _on_tree_completed():
+	print("Quest pohon selesai!")
+
+	current_state = GameState.TREE_QUEST
+	start_tree_story()
+
+func start_tree_story():
+	print("Mulai story pohon...")
+
+	if Dialogic:
+		Dialogic.start(tree_after_timeline)
+
+# 🔥 DIPANGGIL DARI DIALOGIC
+func start_tree_quest():
+	print("MASUK QUEST POHON 🔥")
+
+	current_state = GameState.TREE_QUEST
+
+	# Optional langsung cutscene awal
+	if Dialogic:
+		Dialogic.start("tree_intro")
+
+# ==========================================================
+# ===================== SPAWN ENEMY =========================
+# ==========================================================
+func _on_spawn_enemy_tutorial():
+	print("Spawn enemy tutorial")
+
+func _on_spawn_enemy_tree():
+	print("Spawn enemy pohon")
+
+# ==========================================================
+# ===================== 💀 PLAYER MATI ======================
+# ==========================================================
+func _on_player_died():
+	print("Player mati di state:", current_state)
+
+	match current_state:
+		GameState.TUTORIAL:
+			play_tutorial_death()
+
+		GameState.TREE_QUEST:
+			play_tree_death()
+
+		GameState.PLAYING:
+			play_tree_death()
+
+# ==========================================================
+# ===================== CUTSCENE ============================
+# ==========================================================
+func play_tutorial_death():
+	if get_tree() == null:
+		print("ERROR: SceneTree null")
+		return
+
+	get_tree().change_scene_to_file("res://scenes/cutscene/gameover.tscn") #INI GANTI
+
+func play_tree_death():
+	if get_tree() == null:
+		print("ERROR: SceneTree null")
+		return
+
+	get_tree().change_scene_to_file("res://scenes/cutscene/rottenTomato.tscn")
+# ==========================================================
+# ===================== DIALOGIC SIGNAL =====================
+# ==========================================================
+func _on_dialogic_signal(argument: String):
+	print("Signal dari Dialogic:", argument)
+
+	if argument == "start_pemukiman_mission":
+		start_tree_quest()
