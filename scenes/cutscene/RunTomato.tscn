@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://bwokd5ybbxliw"]
 
-[ext_resource type="Script" uid="uid://da438306aeakm" path="res://scenes/cutscene/run_tomato.gd" id="1_4rkwq"]
+[ext_resource type="Script" uid="uid://bleiv4e7gflx5" path="res://scripts/map/runtomato.gd" id="1_d88xf"]
 [ext_resource type="VideoStream" uid="uid://dpbxm6f00y4uv" path="res://scenes/cutscene/vegetalien-elephant.ogv" id="2_lxpo4"]
 
 [node name="RunTomato" type="Control" unique_id=2115474592]
 layout_mode = 3
 anchors_preset = 0
-script = ExtResource("1_4rkwq")
+script = ExtResource("1_d88xf")
 
 [node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="." unique_id=49126915]
 texture_filter = 3
@@ -21,10 +21,12 @@ expand = true
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1326315724]
 position = Vector2(576, 326)
 
-[node name="Button" type="Button" parent="." unique_id=526165043]
+[node name="Button" type="Button" parent="." unique_id=1182657900]
 layout_mode = 0
 offset_left = 961.0
 offset_top = 590.0
 offset_right = 1131.0
 offset_bottom = 633.0
 text = "Skip button"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

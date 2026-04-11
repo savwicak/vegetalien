@@ -13,6 +13,9 @@ var is_active: bool = false
 var is_dead: bool = false
 var knockback_velocity: Vector2 = Vector2.ZERO
 
+# CUTSCENE STATE (ADDED)
+var cutscene_played: bool = false
+
 # --- NODE REFERENCES ---
 @onready var player: Node2D = get_tree().get_first_node_in_group("player")
 @onready var sprite: Sprite2D = $Sprite2D
@@ -21,11 +24,13 @@ var knockback_velocity: Vector2 = Vector2.ZERO
 @onready var label: Label = $Label
 @onready var health_bar: TextureProgressBar = $HealthBar
 
+
 func _ready():
 	add_to_group("enemies")
 	current_health = max_health
 	update_health_bar()
 	health_bar.visible = false
+
 	# Validasi player
 	if player == null:
 		push_warning("Player tidak ditemukan di group 'player'.")
@@ -45,6 +50,7 @@ func _ready():
 	if dialogic and not dialogic.signal_event.is_connected(_on_dialog_signal):
 		dialogic.signal_event.connect(_on_dialog_signal)
 
+
 # ==========================================================
 # UPDATE HEALTH BAR
 # ==========================================================
@@ -52,6 +58,7 @@ func update_health_bar():
 	if health_bar:
 		health_bar.max_value = max_health
 		health_bar.value = current_health
+
 
 # ==========================================================
 # SIGNAL DARI DIALOGIC UNTUK MEMULAI CHASING
@@ -61,8 +68,10 @@ func _on_dialog_signal(arg: String):
 		is_active = true
 		label.visible = false
 		health_bar.visible = true
+
 		if interact_area:
 			interact_area.queue_free()
+
 
 # ==========================================================
 # INTERACTION
@@ -71,19 +80,23 @@ func _process(delta):
 	if player_near and not is_active and Input.is_action_just_pressed("interact"):
 		start_dialog()
 
+
 func start_dialog():
 	if Dialogic:
 		Dialogic.start("elepant")
+
 
 func _on_body_entered(body):
 	if body.is_in_group("player") and not is_active:
 		player_near = true
 		label.visible = true
 
+
 func _on_body_exited(body):
 	if body.is_in_group("player"):
 		player_near = false
 		label.visible = false
+
 
 # ==========================================================
 # MOVEMENT & CHASING
@@ -113,6 +126,7 @@ func _physics_process(delta):
 		Vector2.ZERO, knockback_friction * delta
 	)
 
+
 # ==========================================================
 # DAMAGE KE PLAYER
 # ==========================================================
@@ -120,8 +134,9 @@ func _on_damage_area_body_entered(body):
 	if body.is_in_group("player") and body.has_method("take_damage"):
 		body.take_damage(global_position)
 
+
 # ==========================================================
-# DAMAGE DARI BULLET (SESUAI DENGAN SCRIPT BULLET)
+# DAMAGE DARI BULLET
 # ==========================================================
 func take_damage(from_position: Vector2, power: float):
 	if is_dead:
@@ -137,12 +152,14 @@ func take_damage(from_position: Vector2, power: float):
 	if current_health <= 0:
 		die()
 
+
 # ==========================================================
 # KNOCKBACK
 # ==========================================================
 func apply_knockback(from_position: Vector2, power: float):
 	var dir = (global_position - from_position).normalized()
 	knockback_velocity = dir * power
+
 
 # ==========================================================
 # VISUAL FEEDBACK
@@ -152,9 +169,54 @@ func flash_red():
 	await get_tree().create_timer(0.1).timeout
 	sprite.modulate = Color(1, 1, 1)
 
+
 # ==========================================================
-# ENEMY MATI
+# ENEMY MATI + CUTSCENE
 # ==========================================================
 func die():
+	if is_dead:
+		return
+
 	is_dead = true
-	queue_free()
+	velocity = Vector2.ZERO
+
+	print("☠️ ELEPHANT MATI")
+
+	if not cutscene_played:
+		cutscene_played = true
+		start_cutscene()
+	else:
+		queue_free()
+
+
+# ==========================================================
+# CUTSCENE SYSTEM (ADDED)
+# ==========================================================
+func start_cutscene():
+	is_active = false
+
+	print("🎬 START CUTSCENE")
+
+	# freeze player (kalau masih ada di scene ini)
+	var player_node = get_tree().get_first_node_in_group("player")
+	if player_node:
+		player_node.set_physics_process(false)
+
+	# pindah scene
+	await get_tree().create_timer(0.2).timeout
+	get_tree().change_scene_to_file("res://scenes/cutscene/RunTomato.tscn")
+
+
+# ==========================================================
+# CUTSCENE END → BACK TO GAMEPLAY
+# ==========================================================
+func _on_cutscene_end(arg: String):
+	if arg == "cutscene_end":
+		print("🎬 CUTSCENE SELESAI")
+		Dialogic.start("")
+
+		var player_node = get_tree().get_first_node_in_group("player")
+		if player_node:
+			player_node.set_physics_process(true)
+
+		queue_free()

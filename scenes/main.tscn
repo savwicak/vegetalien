@@ -31,7 +31,9 @@
 [ext_resource type="PackedScene" uid="uid://dl8nu0nu4bk8k" path="res://scenes/player/EnergyPickup.tscn" id="28_2f3dj"]
 [ext_resource type="PackedScene" uid="uid://ban58m5ccn2xo" path="res://scenes/alien/carrot.tscn" id="29_yq6so"]
 [ext_resource type="PackedScene" uid="uid://cqweitjobn7wo" path="res://scenes/enemy/elepant.tscn" id="30_fv21b"]
+[ext_resource type="Script" uid="uid://xx1o4anum36k" path="res://scenes/ui/map.gd" id="31_c6pm6"]
 [ext_resource type="PackedScene" uid="uid://b3h4ybu0ex873" path="res://scenes/enemy/enemy_animal.tscn" id="31_if84o"]
+[ext_resource type="Texture2D" uid="uid://b8qiavvof3p87" path="res://assets/images/Map.png" id="31_pibwh"]
 [ext_resource type="PackedScene" uid="uid://b2eqrhboscnrf" path="res://scenes/enemy_animal_2.tscn" id="32_k4hdi"]
 [ext_resource type="PackedScene" uid="uid://clhmrpo0yg23" path="res://scenes/alien/mashdoom.tscn" id="34_fuf3a"]
 [ext_resource type="PackedScene" uid="uid://codnh8qcqjqfk" path="res://scenes/enemy/elepant_spawner.tscn" id="35_j8jky"]
@@ -478,13 +480,9 @@ position = Vector2(6650, 4218)
 spawn_interval = 1.5
 max_energy = 30
 
-[node name="EnergySpawner2" parent="." unique_id=90492413 instance=ExtResource("23_y6deb")]
-position = Vector2(3344, 1024)
-rotation = 3.0772796
-
 [node name="Player" parent="." unique_id=2078378948 instance=ExtResource("2_0wfyh")]
 z_index = 30
-position = Vector2(6226, 2985)
+position = Vector2(372, 572)
 
 [node name="EnemyHuman" parent="." unique_id=520596125 instance=ExtResource("3_sugp2")]
 z_index = 30
@@ -501,7 +499,7 @@ position = Vector2(2349, 1157)
 
 [node name="Carrot" parent="." unique_id=2111374422 instance=ExtResource("29_yq6so")]
 z_index = 30
-position = Vector2(1877, 1363)
+position = Vector2(3798, 802)
 script = ExtResource("22_yq6so")
 
 [node name="To Pemukiman" parent="." unique_id=587482171 instance=ExtResource("11_ya4ey")]
@@ -604,6 +602,27 @@ theme_override_fonts/font = ExtResource("26_2wyq8")
 theme_override_font_sizes/font_size = 30
 text = "text"
 
+[node name="Control2" type="Control" parent="CanvasLayer" unique_id=465411881]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("31_c6pm6")
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/Control2" unique_id=723023087]
+position = Vector2(574, 320)
+scale = Vector2(0.55525607, 0.55525607)
+texture = ExtResource("31_pibwh")
+
+[node name="Label" type="Label" parent="CanvasLayer/Control2" unique_id=249229200]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 620.0
+offset_right = 150.0
+offset_bottom = 643.0
+theme_override_fonts/font = ExtResource("26_2wyq8")
+text = "Press M to see map"
+
 [node name="Tutorial" type="Node" parent="." unique_id=84767302]
 
 [node name="EnergyPickup" parent="Tutorial" unique_id=1917920087 instance=ExtResource("28_2f3dj")]
@@ -623,7 +642,7 @@ position = Vector2(1541, 931)
 stamina_amount = 20.0
 
 [node name="Elepant" parent="." unique_id=675213572 instance=ExtResource("30_fv21b")]
-position = Vector2(3300, 668)
+position = Vector2(1019, 2495)
 
 [node name="EnemyAnimal2" parent="." unique_id=1600103487 instance=ExtResource("32_k4hdi")]
 z_index = 10
@@ -632,10 +651,41 @@ max_health = 4
 
 [node name="Mashdoom" parent="." unique_id=1815761454 instance=ExtResource("34_fuf3a")]
 z_index = 30
-position = Vector2(6435, 2900)
+position = Vector2(6453, 2888)
 
 [node name="elepant spawner" parent="." unique_id=2098384156 instance=ExtResource("35_j8jky")]
-position = Vector2(2952, 901)
+position = Vector2(3071, 797)
+max_energy = 30
+
+[node name="elepant spawner7" parent="." unique_id=269751373 instance=ExtResource("35_j8jky")]
+position = Vector2(3365, 901)
+spawn_interval = 0.5
+max_energy = 40
+
+[node name="elepant spawner8" parent="." unique_id=123357152 instance=ExtResource("35_j8jky")]
+position = Vector2(3004, 1066)
+max_energy = 30
+
+[node name="elepant spawner2" parent="." unique_id=404914514 instance=ExtResource("35_j8jky")]
+position = Vector2(862, 2081)
+max_energy = 30
+
+[node name="elepant spawner5" parent="." unique_id=1449199956 instance=ExtResource("35_j8jky")]
+position = Vector2(710, 1942)
+max_energy = 40
+
+[node name="elepant spawner6" parent="." unique_id=2034798228 instance=ExtResource("35_j8jky")]
+position = Vector2(1051, 1984)
+spawn_interval = 0.5
+max_energy = 30
+
+[node name="elepant spawner3" parent="." unique_id=1833357027 instance=ExtResource("35_j8jky")]
+position = Vector2(2963, 650)
+spawn_interval = 0.5
+max_energy = 30
+
+[node name="elepant spawner4" parent="." unique_id=1844293780 instance=ExtResource("35_j8jky")]
+position = Vector2(3100, 1451)
 max_energy = 30
 
 [node name="Shape" type="Node" parent="." unique_id=2050886943]
@@ -645,15 +695,15 @@ position = Vector2(5378, 3367)
 scale = Vector2(0.67999995, 0.67999995)
 
 [node name="Item2" parent="Shape" unique_id=1126041473 instance=ExtResource("37_pibwh")]
-position = Vector2(5575, 3372)
+position = Vector2(5734, 3452)
 scale = Vector2(0.67999995, 0.67999995)
 
 [node name="Item3" parent="Shape" unique_id=1522044177 instance=ExtResource("37_pibwh")]
-position = Vector2(5767, 3367)
+position = Vector2(6109.9995, 3446)
 scale = Vector2(0.67999995, 0.67999995)
 
 [node name="Item4" parent="Shape" unique_id=1504496940 instance=ExtResource("37_pibwh")]
-position = Vector2(5954, 3361.9998)
+position = Vector2(5936, 3239.9998)
 scale = Vector2(0.67999995, 0.67999995)
 
 [node name="Pohon" parent="." unique_id=361298578 instance=ExtResource("37_fuf3a")]

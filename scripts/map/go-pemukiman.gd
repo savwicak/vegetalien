@@ -1,51 +1,116 @@
 extends Area2D
 
-@export var spawn_point_path: NodePath  # Drag Marker2D di Inspector
+@export var spawn_point_path: NodePath
 @export var timeline_name: String = "to_pemukiman"
 
 signal spawner_pemukiman
 
 var player_ref: Node2D = null
 var dialog_started := false
+var can_interact := true  # Langsung bisa digunakan (ubah jika ingin dikunci)
+
 var spawn_point: Marker2D
 
+
+# ==========================================================
+# READY
+# ==========================================================
 func _ready():
-	spawn_point = get_node(spawn_point_path)
+	# Ambil spawn point dengan aman
+	if spawn_point_path != NodePath():
+		spawn_point = get_node_or_null(spawn_point_path)
+
+	if spawn_point == null:
+		push_warning("⚠️ Spawn point tidak ditemukan!")
+
+	# Hubungkan sinyal body_entered
 	body_entered.connect(_on_body_entered)
 
+	# Dialogic signals
+	if Dialogic:
+		if not Dialogic.signal_event.is_connected(_on_dialogic_signal):
+			Dialogic.signal_event.connect(_on_dialogic_signal)
+
+
+# ==========================================================
+# AREA ENTER
+# ==========================================================
 func _on_body_entered(body):
-	if body.is_in_group("player") and not dialog_started:
+	if body.is_in_group("player") and not dialog_started and can_interact:
 		dialog_started = true
 		player_ref = body
-		
-		# Nonaktifkan pergerakan player selama dialog
+
+		print("✅ PLAYER ENTER + INTERACT OK")
+
+		# Nonaktifkan pergerakan player sementara
 		if player_ref.has_method("set_physics_process"):
 			player_ref.set_physics_process(false)
-		
+
 		start_dialog()
 
+
+# ==========================================================
+# START DIALOG
+# ==========================================================
 func start_dialog():
-	# Hubungkan signal dari Dialogic
-	if not Dialogic.signal_event.is_connected(_on_dialogic_signal):
-		Dialogic.signal_event.connect(_on_dialogic_signal)
-	
-	if not Dialogic.timeline_ended.is_connected(_on_dialog_finished):
-		Dialogic.timeline_ended.connect(_on_dialog_finished)
+	print("💬 DIALOG START:", timeline_name)
 
-	Dialogic.start(timeline_name)
+	if Dialogic:
+		# Hubungkan timeline_ended sebagai one-shot
+		if Dialogic.has_signal("timeline_ended"):
+			Dialogic.timeline_ended.connect(
+				_on_dialog_finished,
+				CONNECT_ONE_SHOT
+			)
 
+		if Dialogic.timeline_exists(timeline_name):
+			Dialogic.start(timeline_name)
+		else:
+			push_error("❌ Timeline '%s' tidak ditemukan!" % timeline_name)
+			_on_dialog_finished()
+	else:
+		push_error("❌ Dialogic tidak ditemukan!")
+
+
+# ==========================================================
+# DIALOGIC SIGNAL
+# ==========================================================
 func _on_dialogic_signal(argument: String):
-	if argument == "go_to_pemukiman":
-		teleport_player()
+	print("📡 DIALOG SIGNAL:", argument)
 
+	match argument:
+		"pemukiman_open":
+			can_interact = true
+			print("🔓 INTERACT UNLOCKED!")
+
+		"go_to_pemukiman":
+			teleport_player()
+
+
+# ==========================================================
+# TELEPORT PLAYER
+# ==========================================================
 func teleport_player():
-	if player_ref and spawn_point:
-		player_ref.global_position = spawn_point.global_position
+	if player_ref == null:
+		push_error("❌ Player reference tidak ditemukan!")
+		return
+
+	if spawn_point == null:
+		push_error("❌ Spawn point tidak ditemukan!")
+		return
+
+	print("🚀 Teleport player ke pemukiman")
+	player_ref.global_position = spawn_point.global_position
 	emit_signal("spawner_pemukiman")
 
+
+# ==========================================================
+# DIALOG FINISHED
+# ==========================================================
 func _on_dialog_finished():
-	# Aktifkan kembali pergerakan player
+	print("✅ DIALOG FINISHED")
+
 	if player_ref:
 		player_ref.set_physics_process(true)
-	
+
 	dialog_started = false

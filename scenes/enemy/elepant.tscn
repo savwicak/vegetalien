@@ -12,7 +12,7 @@ radius = 116.0
 height = 236.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_u2ygs"]
-radius = 210.00238
+radius = 309.10355
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_bfi7q"]
 radius = 125.67418
